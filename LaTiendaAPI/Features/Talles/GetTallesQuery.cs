@@ -11,14 +11,13 @@ using LaTienda.Model.DTOS;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace LaTienda.API.Features.Marcas
+namespace LaTienda.API.Features.Talles
 {
     public class GetTallesQuery
     {
         public class Query : IRequest<QueryResult>
         {
-            public int ColorId { get; set; }
-            public string CodigoProducto { get; set; }
+          
         }
 
         public class QueryResult
@@ -40,11 +39,8 @@ namespace LaTienda.API.Features.Marcas
 
             public async Task<QueryResult> Handle(Query request, CancellationToken cancellationToken)
             {
-                var talles = _context.Talles
-                    .Include(s => s.Stocks)
-                    .ThenInclude(p => p.Producto)
-                    .Where(t => t.Stocks.Any(s => s.Producto.Codigo.Equals(request.CodigoProducto) && s.Color.Id == request.ColorId))
-                    .ToList();
+                var talles = await _context.Talles
+                    .ToListAsync();
                 var result = _mapper.Map<List<TalleDTO>>(talles);
                 return new QueryResult()
                 {

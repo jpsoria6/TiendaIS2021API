@@ -36,5 +36,41 @@ namespace LaTienda.API.Controllers
             var result = await _mediator.Send(cmd);
             return new JsonResult(result);
         }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(GetProductoForGridQuery.QueryResult), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+        public async Task<JsonResult> GetProductos([FromHeader] GetProductoForGridQuery.Query cmd)
+        {
+            var result = await _mediator.Send(cmd);
+            return new JsonResult(result);
+        }
+
+        [HttpPut]
+        [ProducesResponseType(typeof(UpdateProductoCommand.CommandResult), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+        public async Task<JsonResult> UpdateProducto([FromBody] UpdateProductoCommand.Command cmd)
+        {
+            var result = await _mediator.Send(cmd);
+            return new JsonResult(result);
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(DeleteProductoCommand.CommandResult), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+        public async Task<JsonResult> DeleteProducto([FromHeader] DeleteProductoCommand.Command cmd)
+        {
+            var result = await _mediator.Send(cmd);
+            return new JsonResult(result);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(GetProductoVentaQuery.QueryResult), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+        public async Task<JsonResult> GetProductosVenta([FromHeader] GetProductoVentaQuery.Query cmd)
+        {
+            var result = await _mediator.Send(cmd);
+            return new JsonResult(result);
+        }
     }
 }

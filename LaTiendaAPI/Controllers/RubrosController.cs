@@ -30,5 +30,13 @@ namespace LaTienda.API.Controllers
             return new JsonResult(result);
         }
 
+        [HttpPost]
+        [ProducesResponseType(typeof(CreateRubroCommand.CommandResult), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+        public async Task<JsonResult> CreateRubros([FromBody] CreateRubroCommand.Command cmd)
+        {
+            var result = await _mediator.Send(cmd);
+            return new JsonResult(result);
+        }
     }
 }

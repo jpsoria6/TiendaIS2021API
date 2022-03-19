@@ -18,6 +18,10 @@ using LaTienda.API.Features.Productos;
 using LaTienda.API.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using LoginServiceReference;
+using AFIPServiceReference;
+using LaTienda.API.Services;
+using static AFIPServiceReference.ServiceSoapClient;
 
 namespace LaTiendaAPI
 {
@@ -46,7 +50,7 @@ namespace LaTiendaAPI
             ConfigureMediatR(services);
             ConfigureMediatR(services);
             ConfigureMapper(services);
-
+            ConfigureServicesClientDI(services);
         }
 
         private void ConfigureMapper(IServiceCollection service)
@@ -79,6 +83,16 @@ namespace LaTiendaAPI
             {
                 System.Diagnostics.Debug.WriteLine(Configuration.GetConnectionString(connString));
                 opts.UseSqlServer(connString);
+            });
+        }
+
+        private void ConfigureServicesClientDI(IServiceCollection services)
+        {
+            services.AddScoped<IAfipService,ClientServiceAfip>(s => {
+                var loginService = new LoginServiceClient();
+                var soapService = new ServiceSoapClient(EndpointConfiguration.ServiceSoap);
+                ClientServiceAfip obj = new ClientServiceAfip(loginService,soapService);
+                return obj;
             });
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -9,13 +9,12 @@ using LaTienda.Model;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace LaTienda.API.Features.Marcas
+namespace LaTienda.API.Features.Colores
 {
     public class GetColoresQuery
     {
         public class Query : IRequest<QueryResult>
         {
-            public string CodigoProducto { get; set; }
         }
 
         public class QueryResult
@@ -35,11 +34,8 @@ namespace LaTienda.API.Features.Marcas
 
             public async Task<QueryResult> Handle(Query request, CancellationToken cancellationToken)
             {
-                var colors = _context.Colores
-                    .Include(c => c.Stocks)
-                    .ThenInclude(s => s.Producto)
-                    .Where(c => c.Stocks.Any(s => s.Producto.Codigo.Equals(request.CodigoProducto)))
-                    .ToList();
+                var colors = await _context.Colores
+                    .ToListAsync();
                 return new QueryResult()
                 {
                     Colores = colors

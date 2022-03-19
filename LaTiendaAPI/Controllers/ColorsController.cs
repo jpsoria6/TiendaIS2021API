@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LaTienda.API.Features.Marcas;
+using LaTienda.API.Features.Colores;
 using MediatR;
 
 namespace LaTienda.API.Controllers
@@ -25,6 +25,25 @@ namespace LaTienda.API.Controllers
         [ProducesResponseType(typeof(GetColoresQuery.QueryResult), 200)]
         [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         public async Task<JsonResult> GetColores([FromHeader] GetColoresQuery.Query cmd)
+        {
+            var result = await _mediator.Send(cmd);
+            return new JsonResult(result);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(GetColoresByProductoQuery.QueryResult), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+        public async Task<JsonResult> GetColoresByProducto([FromHeader] GetColoresByProductoQuery.Query cmd)
+        {
+            var result = await _mediator.Send(cmd);
+            return new JsonResult(result);
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(typeof(CreateColorCommand.CommandResult), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+        public async Task<JsonResult> CreateColor([FromBody] CreateColorCommand.Command cmd)
         {
             var result = await _mediator.Send(cmd);
             return new JsonResult(result);

@@ -26,5 +26,14 @@ namespace LaTienda.API.Controllers
             var result = await _mediator.Send(cmd);
             return new JsonResult(result);
         }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(AgregarStockCommand.CommandResult), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+        public async Task<JsonResult> AgregarStock([FromBody] AgregarStockCommand.Command cmd)
+        {
+            var result = await _mediator.Send(cmd);
+            return new JsonResult(result);
+        }
     }
 }

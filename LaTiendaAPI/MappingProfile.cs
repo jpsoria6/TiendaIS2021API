@@ -19,7 +19,7 @@ namespace LaTienda.API
             CreateMap<Marca, MarcaDTO>();
             CreateMap<Stock, StockDTO>();
             CreateMap<Stock, StockCantDTO>();
-
+            CreateMap<Rubro, RubroDTO>();
 
         }
     }

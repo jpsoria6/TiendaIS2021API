@@ -55,28 +55,27 @@ namespace LaTienda.API.Features.Users
             public async Task<CommandResult> Handle(Command request, CancellationToken cancellationToken)
             {
                 var empleado = await _context.Empleados.FirstOrDefaultAsync(e => e.Legajo == request.Legajo);
-                if (!empleado.Autenticado && empleado.Pass.Equals(request.Password))
+                if (empleado != null)
                 {
-                    empleado.Autenticado = true;
-                    _context.SaveChanges();
-                    return new CommandResult()
+                    if (!empleado.Autenticado && empleado.Pass.Equals(request.Password))
                     {
-                        Id = empleado.Id,
-                        Nombre = empleado.Nombre,
-                        estaAutenticado = true,
-                        TipoUsuario = empleado.Tipo.ToString().ToLower()
-                    };
+                        empleado.Autenticado = true;
+                        _context.SaveChanges();
+                        return new CommandResult()
+                        {
+                            Id = empleado.Id,
+                            Nombre = empleado.Nombre,
+                            estaAutenticado = true,
+                            TipoUsuario = empleado.Tipo.ToString().ToLower()
+                        };
+                    }
                 }
-                else
+                return new CommandResult()
                 {
-                    return new CommandResult()
-                    {
-                        Nombre = "",
-                        estaAutenticado = false,
-                        TipoUsuario = empleado.Tipo.ToString().ToLower()
-                    };
-                }
-               
+                    Nombre = "",
+                    estaAutenticado = false
+                };
+
             }
         }
     }

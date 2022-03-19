@@ -8,5 +8,6 @@ namespace LaTienda.Model.DTOS
     {
         public int Id { get; set; }
         public string Descripcion { get; set; }
+        public TipoTalle TipoTalle { get; set; }
     }
 }

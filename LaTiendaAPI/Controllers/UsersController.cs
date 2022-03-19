@@ -36,5 +36,15 @@ namespace LaTienda.API.Controllers
             var result = await _mediator.Send(cmd);
             return new JsonResult(result);
         }
+
+        
+        [HttpPost]
+        [ProducesResponseType(typeof(CerrarSesionCommand.CommandResult), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+        public async Task<JsonResult> CerrarSesion([FromBody] CerrarSesionCommand.Command cmd)
+        {
+            var result = await _mediator.Send(cmd);
+            return new JsonResult(result);
+        }
     }
 }

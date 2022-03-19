@@ -8,7 +8,7 @@ namespace LaTienda.Model
     {
         public int Id { get; set; }
         public string Descripcion { get; set; }
+        public TipoTalle TipoTalle { get; set; }
         public virtual ICollection<Stock> Stocks { get; set; }
-
     }
 }

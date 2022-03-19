@@ -14,7 +14,9 @@ namespace LaTienda.Model.DTOS
         public double NetoGravado { get; set; }
         public double Iva { get; set; }
         public double PrecioVenta { get; set; }
+        public TipoTalle TipoTalle { get; set; }
         public MarcaDTO Marca { get; set; }
         public List<StockDTO> Stocks { get; set; }
+        public RubroDTO Rubro { get; set; }
     }
 }

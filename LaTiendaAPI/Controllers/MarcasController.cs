@@ -29,5 +29,13 @@ namespace LaTienda.API.Controllers
             return new JsonResult(result);
         }
 
+        [HttpPost]
+        [ProducesResponseType(typeof(CreateMarcaCommand.CommandResult), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+        public async Task<JsonResult> CreateMarca([FromBody] CreateMarcaCommand.Command cmd)
+        {
+            var result = await _mediator.Send(cmd);
+            return new JsonResult(result);
+        }
     }
 }

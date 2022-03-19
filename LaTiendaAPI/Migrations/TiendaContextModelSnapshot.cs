@@ -35,6 +35,9 @@ namespace LaTienda.API.Migrations
                     b.Property<string>("Domicilio")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("EstaBorrado")
+                        .HasColumnType("bit");
+
                     b.Property<string>("RazonSocial")
                         .HasColumnType("nvarchar(max)");
 
@@ -65,13 +68,18 @@ namespace LaTienda.API.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Descripcion")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("ClienteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("NumeroComprobante")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
 
                     b.ToTable("Comprobantes");
                 });
@@ -159,7 +167,7 @@ namespace LaTienda.API.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Codigo")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("Costo")
                         .HasColumnType("float");
@@ -167,8 +175,8 @@ namespace LaTienda.API.Migrations
                     b.Property<string>("Descripcion")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Iva")
-                        .HasColumnType("float");
+                    b.Property<bool>("EstaBorrado")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("MarcaId")
                         .HasColumnType("int");
@@ -176,16 +184,20 @@ namespace LaTienda.API.Migrations
                     b.Property<double>("MargenGanancia")
                         .HasColumnType("float");
 
-                    b.Property<double>("NetoGravado")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PrecioVenta")
+                    b.Property<double>("PorcentajeIva")
                         .HasColumnType("float");
 
                     b.Property<int?>("RubroId")
                         .HasColumnType("int");
 
+                    b.Property<int>("TipoTalle")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Codigo")
+                        .IsUnique()
+                        .HasFilter("[Codigo] IS NOT NULL");
 
                     b.HasIndex("MarcaId");
 
@@ -261,7 +273,7 @@ namespace LaTienda.API.Migrations
 
                     b.HasIndex("TiendaId");
 
-                    b.ToTable("Sucursal");
+                    b.ToTable("Sucursales");
                 });
 
             modelBuilder.Entity("LaTienda.Model.Talle", b =>
@@ -273,6 +285,9 @@ namespace LaTienda.API.Migrations
 
                     b.Property<string>("Descripcion")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TipoTalle")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -307,10 +322,13 @@ namespace LaTienda.API.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("EmpleadoId")
+                    b.Property<int?>("ClienteId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("FacturaId")
+                    b.Property<int?>("ComprobanteId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("EmpleadoId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FechaHora")
@@ -321,11 +339,22 @@ namespace LaTienda.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("ComprobanteId");
+
                     b.HasIndex("EmpleadoId");
 
-                    b.HasIndex("FacturaId");
-
                     b.ToTable("Ventas");
+                });
+
+            modelBuilder.Entity("LaTienda.Model.Comprobante", b =>
+                {
+                    b.HasOne("LaTienda.Model.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId");
+
+                    b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("LaTienda.Model.Empleado", b =>
@@ -368,11 +397,11 @@ namespace LaTienda.API.Migrations
             modelBuilder.Entity("LaTienda.Model.Stock", b =>
                 {
                     b.HasOne("LaTienda.Model.Color", "Color")
-                        .WithMany()
+                        .WithMany("Stocks")
                         .HasForeignKey("ColorId");
 
                     b.HasOne("LaTienda.Model.Producto", "Producto")
-                        .WithMany()
+                        .WithMany("Stocks")
                         .HasForeignKey("ProductoId");
 
                     b.HasOne("LaTienda.Model.Sucursal", "Sucursal")
@@ -380,7 +409,7 @@ namespace LaTienda.API.Migrations
                         .HasForeignKey("SucursalId");
 
                     b.HasOne("LaTienda.Model.Talle", "Talle")
-                        .WithMany()
+                        .WithMany("Stocks")
                         .HasForeignKey("TalleId");
 
                     b.Navigation("Color");
@@ -401,22 +430,38 @@ namespace LaTienda.API.Migrations
 
             modelBuilder.Entity("LaTienda.Model.Venta", b =>
                 {
+                    b.HasOne("LaTienda.Model.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId");
+
+                    b.HasOne("LaTienda.Model.Comprobante", "Comprobante")
+                        .WithMany()
+                        .HasForeignKey("ComprobanteId");
+
                     b.HasOne("LaTienda.Model.Empleado", "Empleado")
                         .WithMany("Ventas")
                         .HasForeignKey("EmpleadoId");
 
-                    b.HasOne("LaTienda.Model.Comprobante", "Factura")
-                        .WithMany()
-                        .HasForeignKey("FacturaId");
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Comprobante");
 
                     b.Navigation("Empleado");
+                });
 
-                    b.Navigation("Factura");
+            modelBuilder.Entity("LaTienda.Model.Color", b =>
+                {
+                    b.Navigation("Stocks");
                 });
 
             modelBuilder.Entity("LaTienda.Model.Empleado", b =>
                 {
                     b.Navigation("Ventas");
+                });
+
+            modelBuilder.Entity("LaTienda.Model.Producto", b =>
+                {
+                    b.Navigation("Stocks");
                 });
 
             modelBuilder.Entity("LaTienda.Model.Rubro", b =>
@@ -427,6 +472,11 @@ namespace LaTienda.API.Migrations
             modelBuilder.Entity("LaTienda.Model.Sucursal", b =>
                 {
                     b.Navigation("Empleados");
+                });
+
+            modelBuilder.Entity("LaTienda.Model.Talle", b =>
+                {
+                    b.Navigation("Stocks");
                 });
 
             modelBuilder.Entity("LaTienda.Model.Tienda", b =>

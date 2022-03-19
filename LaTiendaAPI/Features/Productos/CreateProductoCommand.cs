@@ -21,6 +21,8 @@ namespace LaTienda.API.Features.Productos
             public int IdMarca { get; set; }
             public double MargenGanancia { get; set; }
             public int IdRubro { get; set; }
+            public double Iva { get; set; }
+            public TipoTalle TipoTalle { get; set; }
         }
     
 
@@ -31,10 +33,16 @@ namespace LaTienda.API.Features.Productos
 
         public class CommandValidator : AbstractValidator<Command>
         {
-
-            public CommandValidator()
+            private TiendaContext _context;
+            public CommandValidator(TiendaContext context)
             {
-              
+                _context = context;
+                RuleFor(c => c.CodigoProducto)
+                    .Must(p => { 
+                        var existe = _context.Productos.Any(prod => prod.Codigo.Equals(p));
+                        return !existe;
+                    })
+                    .WithMessage("Codigo Existente");
             }
         }
 
@@ -58,11 +66,11 @@ namespace LaTienda.API.Features.Productos
                     Descripcion = request.Descripcion,
                     MargenGanancia = request.MargenGanancia,
                     Marca = marca,
-                    Rubro = rubro
+                    Rubro = rubro,
+                    TipoTalle = request.TipoTalle,
+                    PorcentajeIva = request.Iva,
+                    EstaBorrado = false
                 };
-                producto.NetoGravado = producto.GetNetoAgrabado();
-                producto.Iva = producto.GetIVA(.21);
-                producto.PrecioVenta = producto.GetPrecioVenta();
 
                 _context.Productos.Add(producto);
                 _context.SaveChanges();

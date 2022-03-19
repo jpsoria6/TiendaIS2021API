@@ -41,8 +41,9 @@ namespace LaTienda.API.Features.Productos
                 var producto = await _context.Productos
                     .Include(p => p.Stocks).ThenInclude(s => s.Talle)
                     .Include(p => p.Stocks).ThenInclude(s => s.Color)
+                    .Include(p => p.Rubro)
                     .Include(p => p.Marca)
-                    .FirstOrDefaultAsync(p => p.Codigo.Equals(request.CodigoProducto));
+                    .FirstOrDefaultAsync(p => p.Codigo.Equals(request.CodigoProducto) && p.EstaBorrado == false);
 
                 var result = _mapper.Map<ProductoDTO>(producto);
                 return new QueryResult()
@@ -52,24 +53,7 @@ namespace LaTienda.API.Features.Productos
             }
 
 
-            public ProductoDTO MapProductoDto(Producto producto)
-            {
-                var dto = new ProductoDTO()
-                {
-                    Id = producto.Id,
-                    Codigo = producto.Codigo,
-                    Costo = producto.Costo,
-                    Descripcion = producto.Descripcion,
-                    Iva = producto.Iva,
-                    MargenGanancia = producto.MargenGanancia,
-                    NetoGravado = producto.NetoGravado,
-                    PrecioVenta = producto.PrecioVenta,
-                   // Marca = producto.Marca,
-                    Stocks = MapStockDtos(producto.Stocks)
-                };
-
-                return dto;
-            }
+           
 
             public List<StockDTO> MapStockDtos(ICollection<Stock> stocks)
             {

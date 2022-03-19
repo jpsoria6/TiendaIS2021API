@@ -12,7 +12,7 @@ namespace LaTienda.Model
         public double Monto { get; set; }
         public virtual ICollection<LineaDeVenta> LineaDeVentas { get; set; }
         public Empleado Empleado { get; set; }
-        public Comprobante Factura { get; set; }
+        public Comprobante Comprobante { get; set; }
         public Cliente Cliente { get; set; }
 
 

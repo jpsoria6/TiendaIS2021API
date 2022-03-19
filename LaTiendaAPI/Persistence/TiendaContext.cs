@@ -21,6 +21,7 @@ namespace LaTienda.API.Persistence
         public DbSet<Tienda> Tiendas { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Producto> Productos { get; set; }
+        public DbSet<Sucursal> Sucursales { get; set; }
 
 
         public TiendaContext(DbContextOptions<TiendaContext> options) : base(options)
@@ -36,7 +37,8 @@ namespace LaTienda.API.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
-
+            modelBuilder.Entity<Producto>()
+            .HasIndex(p => p.Codigo).IsUnique();
 
         }
     }
